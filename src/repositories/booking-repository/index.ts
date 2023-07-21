@@ -33,6 +33,7 @@ function createBooking(userId: number, roomId: number) {
       userId,
       roomId,
       createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 }

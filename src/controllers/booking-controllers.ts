@@ -2,7 +2,6 @@ import { Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '../middlewares';
 import bookingService from '../services/booking-service';
-import { notFoundError } from '../errors';
 
 async function getBooking(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
@@ -20,9 +19,8 @@ async function createBooking(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
   const roomId = Number(req.body.roomId);
   try {
-    if (!roomId) throw notFoundError();
     const booking = await bookingService.createBooking(userId, roomId);
-    res.status(httpStatus.CREATED).send(booking.id);
+    res.status(httpStatus.OK).send(booking.id);
   } catch (error) {
     if (error.name == 'forbiddenError') return res.status(httpStatus.FORBIDDEN).send(error.message);
     if (error.name == 'NotFoundError') return res.status(httpStatus.NOT_FOUND).send(error.message);
