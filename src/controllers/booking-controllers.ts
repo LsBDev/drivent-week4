@@ -37,6 +37,8 @@ async function updateBooking(req: AuthenticatedRequest, res: Response) {
     const booking = await bookingService.updateBooking(userId, bookingId, roomId);
     res.status(httpStatus.OK).send({ bookingId: booking.id });
   } catch (error) {
+    if (error.name == 'forbiddenError') return res.status(httpStatus.FORBIDDEN).send(error.message);
+    if (error.name == 'NotFoundError') return res.status(httpStatus.NOT_FOUND).send(error.message);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send('Algo de errado não está certo!');
   }
 }
