@@ -38,11 +38,24 @@ function createBooking(userId: number, roomId: number) {
   });
 }
 
+function updateBooking(bookingId: number, roomId: number) {
+  return prisma.booking.update({
+    data: {
+      roomId,
+      updatedAt: new Date(),
+    },
+    where: {
+      id: bookingId,
+    },
+  });
+}
+
 const bookingRepository = {
   getBooking,
   getRoomByRoomId,
   getAllBookingsByRoomId,
   createBooking,
+  updateBooking,
 };
 
 export default bookingRepository;

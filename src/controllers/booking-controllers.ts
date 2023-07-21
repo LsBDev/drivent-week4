@@ -20,7 +20,7 @@ async function createBooking(req: AuthenticatedRequest, res: Response) {
   const roomId = Number(req.body.roomId);
   try {
     const booking = await bookingService.createBooking(userId, roomId);
-    res.status(httpStatus.OK).send(booking.id);
+    res.status(httpStatus.OK).send({ bookingId: booking.id });
   } catch (error) {
     if (error.name == 'forbiddenError') return res.status(httpStatus.FORBIDDEN).send(error.message);
     if (error.name == 'NotFoundError') return res.status(httpStatus.NOT_FOUND).send(error.message);
@@ -28,8 +28,22 @@ async function createBooking(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+async function updateBooking(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const bookingId = Number(req.params.bookingId);
+  const roomId = Number(req.body.roomId);
+
+  try {
+    const booking = await bookingService.updateBooking(userId, bookingId, roomId);
+    res.status(httpStatus.OK).send({ bookingId: booking.id });
+  } catch (error) {
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send('Algo de errado não está certo!');
+  }
+}
+
 const bookingController = {
   getBooking,
   createBooking,
+  updateBooking,
 };
 export default bookingController;
