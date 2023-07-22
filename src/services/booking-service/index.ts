@@ -11,8 +11,6 @@ async function getBooking(userId: number) {
 }
 
 async function createBooking(userId: number, roomId: number) {
-  //Regra de negócio: Apenas usuários com ingresso do tipo presencial, com hospedagem e pago podem fazer reservas.
-  //Pegar o enrollmentId
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
   const ticketWithTicketType = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
   if (
@@ -21,30 +19,19 @@ async function createBooking(userId: number, roomId: number) {
     ticketWithTicketType.status === 'RESERVED'
   )
     throw forbiddenError();
-  //Error:
-  //- `roomId` não existente: Deve retornar status code `404`.
   const room = await bookingRepository.getRoomByRoomId(roomId);
   if (!room) throw notFoundError();
   const bookings = await bookingRepository.getAllBookingsByRoomId(roomId);
-  //- `roomId` sem vaga: Deve retornar status code `403`.
   if (room.capacity <= bookings.length) throw forbiddenError();
-
-  //- Fora da regra de negócio: Deve retornar status code `403`.
   return await bookingRepository.createBooking(userId, roomId);
-  //Sucesso: Deve retornar status code 200 com bookingId
-  // return booking.id
 }
 
 async function updateBooking(userId: number, bookingId: number, roomId: number) {
   const bookings = await bookingRepository.getAllBookingsByRoomId(roomId);
-  //   - A troca pode ser efetuada para usuários que possuem reservas.
   const booking = await bookingRepository.getBooking(userId);
   if (!booking) throw forbiddenError();
-  // - `roomId` não existente: Deve retornar status code `404`.
   const room = await bookingRepository.getRoomByRoomId(roomId);
   if (!room) throw notFoundError();
-  // - A troca pode ser efetuada apenas para quartos livres.
-  // - `roomId` sem vaga: Deve retornar status code `403`.
   if (room.capacity <= bookings.length) throw forbiddenError();
 
   return await bookingRepository.updateBooking(bookingId, roomId);

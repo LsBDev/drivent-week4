@@ -1,48 +1,23 @@
-import faker from '@faker-js/faker';
+import { cleanDb } from '../helpers';
 import bookingRepository from '@/repositories/booking-repository';
 import bookingService from '@/services/booking-service';
+import { init } from '@/app';
+
+beforeEach(async () => {
+  await init();
+  await cleanDb();
+});
 
 describe('GET /booking', () => {
   jest.spyOn(bookingRepository, 'getBooking').mockImplementation((): any => {
-    return [
-      {
-        id: 1,
-        userId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        roomId: [
-          {
-            id: 1,
-            name: faker.commerce.productName(),
-            capacity: 2,
-            hotelId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ],
-      },
-    ];
+    return null;
   });
 
-  it('deveria retornar as reservas', async () => {
-    const booking = await bookingService.getBooking(1);
-    expect(booking).toEqual([
-      {
-        id: 1,
-        userId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        roomId: [
-          {
-            id: 1,
-            name: faker.commerce.productName(),
-            capacity: 2,
-            hotelId: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ],
-      },
-    ]);
+  it('Não encontrado', async () => {
+    const promise = bookingService.getBooking(5);
+    expect(promise).rejects.toEqual({
+      name: 'NotFoundError',
+      message: 'No result for this search!',
+    });
   });
 });
