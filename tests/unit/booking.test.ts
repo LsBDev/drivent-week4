@@ -50,25 +50,3 @@ describe('GET /booking', () => {
     });
   });
 });
-
-// describe('POST /booking', () => {
-
-//   afterEach(() => {
-//     jest.clearAllMocks();
-//   });
-
-//   it('should create a booking when all conditions are met', async () => {
-//     // Mock das funções
-//     jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockResolvedValue({ id: 1 });
-//     jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValue({
-//       TicketType: { isRemote: false, includesHotel: true,
-//       TicketStatus}
-//     });
-//     jest.spyOn(bookingRepository, 'getRoomByRoomId').mockResolvedValue({ id: 1, capacity: 5 });
-//     jest.spyOn(bookingRepository, 'getAllBookingsByRoomId').mockResolvedValue([]);
-
-//     const result = await bookingService.createBooking(1, 1);
-
-//     expect(result).toEqual({ /* ... */ });
-//   })
-// });
